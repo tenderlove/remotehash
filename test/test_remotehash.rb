@@ -3,7 +3,7 @@ require "remotehash"
 require 'logger'
 
 class TestRemoteHash < Test::Unit::TestCase
-  OPENDHT_URI = "http://planetlab11.Millennium.Berkeley.EDU:5851/"
+  OPENDHT_URI = "http://any.openlookup.net:5851/"
   #OPENDHT_URI = "http://planetlab1.cs.uoregon.edu:5851/"
 
   def test_new

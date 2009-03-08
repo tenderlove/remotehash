@@ -15,6 +15,14 @@ Provides a simple interface to OpenDHT[http://opendht.org/] servers.
 == SYNOPSIS:
 
   ###
+  # Remotely store an array
+  a1 = RemoteArray.new('foo')
+  a1.push('hello world')
+
+  a2 = RemoteArray.new('foo')
+  assert_equal 'hello world', a2.last
+
+  ###
   # Remotely store a hash
   h1 = RemoteHash.new('hello world')
   h2 = RemoteHash.new('hello world')

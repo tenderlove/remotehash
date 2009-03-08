@@ -44,6 +44,7 @@ class RemoteArray
       retry
     end
   end
+  alias :<< :push
 
   def pop
     rm(to_a.last)
@@ -51,6 +52,10 @@ class RemoteArray
 
   def length
     to_a.length
+  end
+
+  def last
+    to_a.last
   end
 
   def to_a
@@ -82,6 +87,10 @@ class RemoteArray
     values.find_all { |entry|
       entry.last == Digest::SHA1.digest(@secret)
     }.sort_by { |entry| entry[1] }.map { |x| Marshal.load(x.first) }
+  end
+
+  def clear
+    to_a.each { |v| rm(v) }
   end
 
   private

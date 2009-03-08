@@ -2,6 +2,7 @@ require 'uri'
 require 'xmlrpc/client'
 require 'digest/sha1'
 require 'logger'
+require 'remotearray'
 
 ###
 # RemoteHash is a simple OpenDHT client. It lets you store simple hashes on
@@ -31,7 +32,8 @@ class RemoteHash
   # another RemoteHash with the same +secret+ has.  Thus, two RemoteHash
   # instances with the same +secret+ are considered to be equal.
   def initialize secret = Time.now.to_f, uri = "http://opendht.nyuld.net:5851/"
-    uri = URI.parse(uri)
+    @uri  = uri
+    uri   = URI.parse(@uri)
 
     @rpc = XMLRPC::Client.new3(
       :host => uri.host,
@@ -39,6 +41,9 @@ class RemoteHash
       :path => uri.path
     )
     @secret       = secret.to_s
+    @internal_hash = Hash.new { |h,k|
+      h[k] = RemoteArray.new(k, @secret, @uri)
+    }
     self.debug_output = nil
     self.debug_output = Logger.new($stdout) if $DEBUG
   end
@@ -53,53 +58,20 @@ class RemoteHash
   ###
   # Set +key+ to +value+
   def []= key, value
-    retries = 0
-    begin
-      result = @rpc.call('put_removable',
-        XMLRPC::Base64.new(Marshal.dump(key)),
-        XMLRPC::Base64.new(Marshal.dump(value)),
-        'SHA',
-        XMLRPC::Base64.new(Digest::SHA1.digest(@secret)),
-        3600,
-        'remotehash'
-      )
-      raise "Capacity" if result == 1
-    rescue Timeout::Error => e
-      raise(e) if retries == 4
-      retries += 1
-      retry
-    end
+    @internal_hash[key].push value
+    value
   end
 
   ###
   # Get the value for +key+
   def [] key
-    value = values_for(key).last.first
-    return nil unless value
-    Marshal.load(value)
+    @internal_hash[key].last
   end
 
   ###
   # Delete +key+ from the hash.
   def delete key
-    values_for(key).each do |value, *rest|
-      retries = 0
-      begin
-        result = @rpc.call('rm',
-          XMLRPC::Base64.new(Marshal.dump(key)),
-          XMLRPC::Base64.new(Marshal.dump(value)),
-          'SHA',
-          XMLRPC::Base64.new(Digest::SHA1.digest(@secret)),
-          3600,
-          'remotehash'
-        )
-        raise if result == 1
-      rescue Timeout::Error => e
-        raise(e) if retries == 4
-        retries += 1
-        retry
-      end
-    end
+    @internal_hash[key].clear
   end
 
   ###
@@ -108,45 +80,5 @@ class RemoteHash
   def == other
     return false unless other.is_a?(RemoteHash)
     secret == other.secret
-  end
-
-  private
-  def values_for key
-    values = []
-    placemark = ''
-
-    D 'fetching key'
-    loop do
-      D 'calling get_details'
-      retries = 0
-      begin
-
-        result = @rpc.call('get_details',
-          XMLRPC::Base64.new(Marshal.dump(key)),
-          10,
-          XMLRPC::Base64.new(placemark),
-          'remotehash'
-        )
-        values += result.first
-        placemark = result.last
-        break if placemark == ''
-
-      rescue Timeout::Error => e
-        raise e if retries == 4
-        retries += 1
-        retry
-      end
-    end
-
-    # Get the newest value with a matching sha1
-    values.find_all { |entry|
-      entry.last == Digest::SHA1.digest(@secret)
-    }.sort_by { |entry| entry[1] } || [[]]
-  end
-
-  def D message
-    return unless @debug_output
-    @debug_output << message
-    @debug_output << "\n"
   end
 end
