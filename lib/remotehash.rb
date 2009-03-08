@@ -30,7 +30,7 @@ class RemoteHash
     retries = 0
     begin
       result = @rpc.call('put_removable',
-        XMLRPC::Base64.new(key),
+        XMLRPC::Base64.new(Marshal.dump(key)),
         XMLRPC::Base64.new(Marshal.dump(value)),
         'SHA',
         XMLRPC::Base64.new(Digest::SHA1.digest(@secret)),
@@ -56,7 +56,7 @@ class RemoteHash
       begin
 
         result = @rpc.call('get_details',
-          XMLRPC::Base64.new(key),
+          XMLRPC::Base64.new(Marshal.dump(key)),
           10,
           XMLRPC::Base64.new(placemark),
           'remotehash'
