@@ -55,4 +55,10 @@ class TestRemoteHash < Test::Unit::TestCase
     h1['foo'] = 'bar'
     assert_equal 'bar', h2['foo']
   end
+
+  def test_equals
+    h1 = RemoteHash.new('hello world')
+    h2 = RemoteHash.new('hello world')
+    assert_equal h1, h2
+  end
 end

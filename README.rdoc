@@ -18,7 +18,11 @@ Provides a simple interface to OpenDHT servers.
   # Remotely store a hash
   h1 = RemoteHash.new('hello world')
   h2 = RemoteHash.new('hello world')
+
+  # Set a key in one hash
   h1['foo'] = 'bar'
+
+  # Fetch it from another
   assert_equal 'bar', h2['foo']
 
 == INSTALL:
