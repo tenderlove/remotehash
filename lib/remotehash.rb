@@ -31,7 +31,7 @@ class RemoteHash
     begin
       result = @rpc.call('put_removable',
         XMLRPC::Base64.new(key),
-        XMLRPC::Base64.new(value),
+        XMLRPC::Base64.new(Marshal.dump(value)),
         'SHA',
         XMLRPC::Base64.new(Digest::SHA1.digest(@secret)),
         3600,
@@ -73,9 +73,11 @@ class RemoteHash
     end
 
     # Get the newest value with a matching sha1
-    (values.sort_by { |entry| entry[1] }.reverse.find { |entry|
+    value = (values.sort_by { |entry| entry[1] }.reverse.find { |entry|
       entry.last == Digest::SHA1.digest(@secret)
     } || []).first
+    return nil unless value
+    Marshal.load(value)
   end
 
   private

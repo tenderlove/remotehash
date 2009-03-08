@@ -26,4 +26,10 @@ class TestRemoteHash < Test::Unit::TestCase
     h1['foo'] = 'bar'
     assert_nil h2['foo']
   end
+
+  def test_array_as_value
+    h1 = RemoteHash.new
+    h1['foo'] = %w{ bar baz }
+    assert_equal %w{ bar baz }, h1['foo']
+  end
 end
