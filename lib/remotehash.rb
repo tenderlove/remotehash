@@ -37,7 +37,7 @@ class RemoteHash
         3600,
         'remotehash'
       )
-      raise if result == 1
+      raise "Capacity" if result == 1
     rescue Timeout::Error => e
       raise(e) if retries == 4
       retries += 1
@@ -94,7 +94,7 @@ class RemoteHash
         break if placemark == ''
 
       rescue Timeout::Error => e
-        raise(e) if retries == 4
+        raise e if retries == 4
         retries += 1
         retry
       end

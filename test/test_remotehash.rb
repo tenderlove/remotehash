@@ -3,7 +3,8 @@ require "remotehash"
 require 'logger'
 
 class TestRemoteHash < Test::Unit::TestCase
-  OPENDHT_URI = "http://planetlab1.cs.uoregon.edu:5851/"
+  OPENDHT_URI = "http://planetlab11.Millennium.Berkeley.EDU:5851/"
+  #OPENDHT_URI = "http://planetlab1.cs.uoregon.edu:5851/"
 
   def test_new
     assert RemoteHash.new
@@ -46,5 +47,12 @@ class TestRemoteHash < Test::Unit::TestCase
     h1['foo'] = 'bar'
     h1.delete('foo')
     assert_nil h1['foo']
+  end
+
+  def test_equal_keys
+    h1 = RemoteHash.new('hello world')
+    h2 = RemoteHash.new('hello world')
+    h1['foo'] = 'bar'
+    assert_equal 'bar', h2['foo']
   end
 end

@@ -1,32 +1,37 @@
 = remotehash
 
-* FIX (url)
+* http://remotehash.rubyforge.org/
+* http://github.com/tenderlove/remotehash
 
 == DESCRIPTION:
 
-FIX (describe your package)
+Provides a simple interface to OpenDHT servers.
 
 == FEATURES/PROBLEMS:
 
-* FIX (list of features or problems)
+* Acts like a hash (sort of)
+* Needs to not hit the internet in tests
 
 == SYNOPSIS:
 
-  FIX (code sample of usage)
-
-== REQUIREMENTS:
-
-* FIX (list of requirements)
+  ###
+  # Remotely store a hash
+  h1 = RemoteHash.new('hello world')
+  h2 = RemoteHash.new('hello world')
+  h1['foo'] = 'bar'
+  assert_equal 'bar', h2['foo']
 
 == INSTALL:
 
-* FIX (sudo gem install, anything else)
+* sudo gem install remotehash
 
 == LICENSE:
 
 (The MIT License)
 
-Copyright (c) 2009 FIX
+Copyright (c) 2009
+
+* {Aaron Patterson}[http://tenderlovemaking.com]
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
