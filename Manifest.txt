@@ -1,7 +1,7 @@
 .autotest
-History.txt
+CHANGELOG.rdoc
 Manifest.txt
-README.txt
+README.rdoc
 Rakefile
 lib/remotehash.rb
 test/test_remotehash.rb
