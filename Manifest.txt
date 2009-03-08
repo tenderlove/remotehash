@@ -3,5 +3,7 @@ CHANGELOG.rdoc
 Manifest.txt
 README.rdoc
 Rakefile
+lib/remotearray.rb
 lib/remotehash.rb
+test/test_remote_array.rb
 test/test_remotehash.rb
