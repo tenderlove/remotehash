@@ -2,7 +2,9 @@
 
 require 'rubygems'
 require 'hoe'
-require './lib/remotehash.rb'
+
+$: << File.expand_path(File.join(File.dirname(__FILE__), 'lib'))
+require 'remotehash'
 
 Hoe.new('remotehash', RemoteHash::VERSION) do |p|
   p.developer('Aaron Patterson', 'aaronp@rubyforge.org')
