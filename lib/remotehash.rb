@@ -8,8 +8,8 @@ class RemoteHash
 
   attr_reader :debug_output
 
-  def initialize secret = Time.now.to_f
-    uri = URI.parse("http://planetlab1.cs.uoregon.edu:5851/")
+  def initialize secret = Time.now.to_f, uri = "http://opendht.nyuld.net:5851/"
+    uri = URI.parse(uri)
 
     @rpc = XMLRPC::Client.new3(
       :host => uri.host,
@@ -46,6 +46,34 @@ class RemoteHash
   end
 
   def [] key
+    value = values_for(key).last.first
+    return nil unless value
+    Marshal.load(value)
+  end
+
+  def delete key
+    values_for(key).each do |value, *rest|
+      retries = 0
+      begin
+        result = @rpc.call('rm',
+          XMLRPC::Base64.new(Marshal.dump(key)),
+          XMLRPC::Base64.new(Marshal.dump(value)),
+          'SHA',
+          XMLRPC::Base64.new(Digest::SHA1.digest(@secret)),
+          3600,
+          'remotehash'
+        )
+        raise if result == 1
+      rescue Timeout::Error => e
+        raise(e) if retries == 4
+        retries += 1
+        retry
+      end
+    end
+  end
+
+  private
+  def values_for key
     values = []
     placemark = ''
 
@@ -73,14 +101,11 @@ class RemoteHash
     end
 
     # Get the newest value with a matching sha1
-    value = (values.sort_by { |entry| entry[1] }.reverse.find { |entry|
+    values.find_all { |entry|
       entry.last == Digest::SHA1.digest(@secret)
-    } || []).first
-    return nil unless value
-    Marshal.load(value)
+    }.sort_by { |entry| entry[1] } || [[]]
   end
 
-  private
   def D message
     return unless @debug_output
     @debug_output << message
