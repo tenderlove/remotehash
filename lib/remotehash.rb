@@ -21,7 +21,7 @@ require 'remotearray'
 #
 # For more information on OpenDHT, see http://opendht.org/
 class RemoteHash
-  VERSION = '1.0.0'
+  VERSION = '0.0.0'
   OPENDHT_URI = "http://openlookup.appspot.com/"
 
   attr_reader :debug_output
