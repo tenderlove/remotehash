@@ -4,7 +4,9 @@ require 'digest/sha1'
 require 'logger'
 
 class RemoteArray
-  def initialize key = Time.now.to_i, secret = key, uri = "http://opendht.nyuld.net:5851/"
+  OPENDHT_URI = "http://openlookup.appspot.com/"
+
+  def initialize key = Time.now.to_i, secret = key, uri = OPENDHT_URI
 
     uri = URI.parse(uri)
 

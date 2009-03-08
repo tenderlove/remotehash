@@ -22,6 +22,7 @@ require 'remotearray'
 # For more information on OpenDHT, see http://opendht.org/
 class RemoteHash
   VERSION = '1.0.0'
+  OPENDHT_URI = "http://openlookup.appspot.com/"
 
   attr_reader :debug_output
   attr_accessor :secret
@@ -31,7 +32,7 @@ class RemoteHash
   # Any RemoteHash created with +secret+ has access to the same data that
   # another RemoteHash with the same +secret+ has.  Thus, two RemoteHash
   # instances with the same +secret+ are considered to be equal.
-  def initialize secret = Time.now.to_f, uri = "http://opendht.nyuld.net:5851/"
+  def initialize secret = Time.now.to_f, uri = OPENDHT_URI
     @uri  = uri
     uri   = URI.parse(@uri)
 
