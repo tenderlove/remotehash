@@ -1,11 +1,11 @@
-= remotehash
+= RemoteHash
 
-* http://remotehash.rubyforge.org/
+* http://remotehash.rubyforge.org
 * http://github.com/tenderlove/remotehash
 
 == DESCRIPTION:
 
-Provides a simple interface to OpenDHT servers.
+Provides a simple interface to OpenDHT[http://opendht.org/] servers.
 
 == FEATURES/PROBLEMS:
 
